@@ -1,0 +1,22 @@
+version: "3"
+services:
+  transmission:
+    build: transmission/
+    user: "1000:1000"
+    volumes:
+      - ./config:/config:z
+      - /var/mnt/data/Torrents:/downloads:z
+      - /var/mnt/data/Media:/media:z
+    ports:
+      - 51413:51413
+      - 51413:51413/udp
+    restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.transmission.rule=Host(`torrent.gandro.dev`)"
+      - "traefik.http.routers.transmission.middlewares=auth@file"
+      - "traefik.http.services.transmission.loadbalancer.server.port=9091"
+networks:
+  default:
+    external: true
+    name: traefik_services

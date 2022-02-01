@@ -1,0 +1,31 @@
+version: "3"
+
+services:
+  mc:
+    image: itzg/minecraft-server
+    ports:
+      - 25565:25565
+    environment:
+      EULA: "TRUE"
+      MEMORY: "2G"
+      SERVER_NAME: "Phoebe"
+      MOTD: "Welcome to §4§lP§c§lh§6§le§e§lo§f§lb§6§le§r Base Station"
+      ICON: "https://i.imgur.com/kiX1Kkr.png"
+      OPS: "gandro"
+      WHITELIST: "gandro"
+    tty: true
+    stdin_open: true
+    restart: unless-stopped
+    volumes:
+      - ./data:/data:z
+  backups:
+    image: itzg/mc-backup
+    environment:
+      BACKUP_INTERVAL: "8h"
+      PRUNE_BACKUPS_DAYS: "7"
+      RCON_HOST: "mc"
+      PAUSE_IF_NO_PLAYERS: "true"
+    volumes:
+    - ./data:/data:ro,z
+    - ./backups:/backups:z
+

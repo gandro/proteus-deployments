@@ -1,0 +1,37 @@
+version: '3'
+services:
+  jellyfin:
+    image: jellyfin/jellyfin
+    user: 1000:1000
+    group_add: # by id as these may not exist within the container. Needed to provide permissions to the VAAPI Devices
+      - "105" #render
+      - "39"  #video
+    # Network mode of 'host' exposes the ports on the host. This is needed for DLNA access.
+    network_mode: "host"
+    volumes:
+      - ./config:/config:z
+      - ./cache:/cache:z
+      - /var/mnt/data/Media:/media:ro,z
+    restart: always
+    devices:
+      - /dev/dri/renderD128:/dev/dri/renderD128:z
+      - /dev/dri/card0:/dev/dri/card0:z
+    environment:
+      - JELLYFIN_PublishedServerUrl=media.gandro.dev
+    labels:
+      - "traefik.enable=true"
+      ## HTTP Router
+      #### Host or Path where Jellyfin is accessible
+      - "traefik.http.routers.jellyfin.rule=Host(`media.gandro.dev`)"
+      #### Expose only HTTP port via Traefik
+      - "traefik.http.services.jellyfin.loadbalancer.server.port=8096"
+      ## Middleware
+      - "traefik.http.routers.jellyfin.middlewares=jellyfin-mw"
+      #### The customResponseHeaders option lists the Header names and values to apply to the response.
+      - "traefik.http.middlewares.jellyfin-mw.headers.customResponseHeaders.X-Robots-Tag=noindex,nofollow,nosnippet,noarchive,notranslate,noimageindex"
+      #### Set frameDeny to true to add the X-Frame-Options header with the value of DENY.
+      - "traefik.http.middlewares.jellyfin-mw.headers.frameDeny=true"
+      #### Set contentTypeNosniff to true to add the X-Content-Type-Options header with the value nosniff.
+      - "traefik.http.middlewares.jellyfin-mw.headers.contentTypeNosniff=true"
+      #### Set browserXssFilter to true to add the X-XSS-Protection header with the value 1; mode=block.
+      - "traefik.http.middlewares.jellyfin-mw.headers.browserXSSFilter=true"
