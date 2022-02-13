@@ -1,0 +1,11 @@
+http:
+  routers:
+    api:
+      rule: Host(`traefik.gandro.dev`)
+      service: api@internal
+      middlewares:
+        - auth
+  middlewares:
+    auth:
+      basicAuth:
+        usersFile: /etc/traefik/htpasswd
