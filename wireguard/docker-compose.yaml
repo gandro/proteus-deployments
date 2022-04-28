@@ -1,0 +1,11 @@
+version: "3"
+services:
+  wireguard:
+    build:
+      context: ./wireguard
+    privileged: true
+    volumes:
+      - ./wg0.conf:/etc/wireguard/wg0.conf:z
+    ports:
+      - 51820:51820/udp
+    restart: always
