@@ -5,7 +5,7 @@ services:
       context: ./wireguard
     privileged: true
     volumes:
-      - ./wg0.conf:/etc/wireguard/wg0.conf:z
+      - ./config:/etc/wireguard/:z,ro
     ports:
       - 51820:51820/udp
     restart: always
