@@ -1,0 +1,30 @@
+version: '3'
+services:
+  miniflux:
+    image: miniflux/miniflux:latest
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=postgres://miniflux:secret@db/miniflux?sslmode=disable
+      - RUN_MIGRATIONS=1
+      - BASE_URL=https://rssreader.gandro.dev
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.miniflux.rule=Host(`rssreader.gandro.dev`)"
+      - "traefik.http.services.miniflux.loadbalancer.server.port=8080"
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=miniflux
+      - POSTGRES_PASSWORD=secret
+    volumes:
+      - ./data:/var/lib/postgresql/data:z
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "miniflux"]
+      interval: 10s
+      start_period: 30s
+networks:
+  default:
+    external: true
+    name: traefik_services
