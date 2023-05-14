@@ -1,0 +1,36 @@
+homeassistant:
+  name: gandro
+  temperature_unit: !secret temperature_unit
+  time_zone: !secret time_zone
+  latitude: !secret latitude
+  longitude: !secret longitude
+  unit_system: !secret unit_system
+  elevation: !secret elevation
+  country: !secret country
+
+frontend:
+http:
+  use_x_forwarded_for: true
+  trusted_proxies:
+    - !secret trusted_proxy
+
+config:
+history:
+input_datetime:
+schedule:
+
+template:
+  - sensor:
+    - name: Laundry
+      icon: mdi:washing-machine
+      state: |
+        {% set today = now() %}
+        {% set days_to_friday = (4 - today.weekday()) % 7 %}
+        {% set laundry = today + timedelta(days_to_friday) %}
+        {% if laundry.isocalendar().week % 2 %}
+          {% set laundry = laundry + timedelta(7) %}
+        {% endif %}
+        {{ as_timestamp(laundry) | timestamp_custom("%Y-%m-%d") }}
+
+logger:
+  default: info
