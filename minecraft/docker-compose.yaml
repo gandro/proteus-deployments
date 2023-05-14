@@ -6,13 +6,14 @@ services:
     ports:
       - 25565:25565
     environment:
+      VERSION: "1.19.4"
+      ONLINE_MODE: "TRUE"
       EULA: "TRUE"
       MEMORY: "2G"
       SERVER_NAME: "Phoebe"
       MOTD: "Welcome to §4§lP§c§lh§6§le§e§lo§f§lb§6§le§r Base Station"
       ICON: "https://i.imgur.com/kiX1Kkr.png"
       OPS: "gandro"
-      WHITELIST: "gandro"
     tty: true
     stdin_open: true
     restart: unless-stopped
