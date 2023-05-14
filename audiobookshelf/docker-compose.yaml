@@ -1,0 +1,25 @@
+services:
+  audiobookshelf:
+    container_name: audiobookshelf
+    image: ghcr.io/advplyr/audiobookshelf:latest
+    environment:
+      - AUDIOBOOKSHELF_UID=1000
+      - AUDIOBOOKSHELF_GID=1000
+    restart: always
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.audiobookshelf.rule=Host(`audiobooks.gandro.dev`)"
+      - "traefik.http.services.audiobookshelf.loadbalancer.server.port=80"
+    volumes:
+      - ./config:/config:z
+      - ./metadata:/metadata:z
+      - /var/mnt/data/Media/Bookshelf:/audiobooks:z
+      - /var/mnt/data/Media/Podcasts:/podcasts:z
+networks:
+  default:
+    external: true
+    name: traefik_services
