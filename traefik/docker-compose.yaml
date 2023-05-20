@@ -4,18 +4,18 @@ services:
   router:
     image: traefik:v2.10
     restart: always
-    privileged: true # docker socket access
     ports:
-      - "80:80"
       - "443:443"
     volumes:
       - ./acme:/etc/traefik/acme:z
       - ./conf.d:/etc/traefik/conf.d:z
       - ./htpasswd:/etc/traefik/htpasswd:ro,z
       - ./traefik.yaml:/etc/traefik/traefik.yaml:ro,z
-      - /var/run/docker.sock:/var/run/docker.sock:ro,z
     extra_hosts:
         - host.docker.internal:172.17.0.1
+    networks:
+      - traefik_services
+      - dockerapi
   static:
     image: "nginx"
     volumes:
@@ -23,7 +23,27 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.static.rule=Host(`gandro.dev`)"
+    networks:
+      - traefik_services
+  dockerapi:
+    image: ghcr.io/tecnativa/docker-socket-proxy
+    restart: unless-stopped
+    privileged: true # SELinux
+    expose:
+      - "2375"
+    environment:
+      - CONTAINERS=1
+      - NETWORKS=1
+      - SERVICES=1
+      - TASKS=1
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro,z
+    networks:
+      - dockerapi
 networks:
-  default:
-    external: false
+  # Needs to be created manually
+  traefik_services:
+    external: true
     name: traefik_services
+  # For Docker API access
+  dockerapi:
