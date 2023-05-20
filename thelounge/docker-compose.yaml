@@ -10,8 +10,8 @@ services:
     restart: always
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.homeassistant.rule=Host(`irc.gandro.dev`)"
-      - "traefik.http.services.homeassistant.loadbalancer.server.port=9000"
+      - "traefik.http.routers.thelounge.rule=Host(`irc.gandro.dev`)"
+      - "traefik.http.services.thelounge.loadbalancer.server.port=9000"
 networks:
   default:
     external: true
