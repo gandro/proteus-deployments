@@ -1,0 +1,26 @@
+version: '3'
+services:
+  jdownloader-2:
+    image: jlesage/jdownloader-2
+    restart: unless-stopped
+    ports:
+      - "5800:5800"
+    environment:
+      USER_ID: "1000"
+      GROUP_ID: "1000"
+      DISPLAY_WIDTH: "1280"
+      DISPLAY_HEIGHT: "720"
+      TZ: "Europe/Zurich"
+    volumes:
+      - "./config:/config:rw,z"
+      - "/var/mnt/data/Torrents:/output:rw,z"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.jd.rule=Host(`jd.gandro.dev`)"
+      - "traefik.http.routers.jd.entrypoints=websecure"
+      - "traefik.http.routers.jd.middlewares=auth@file"
+      - "traefik.http.services.jd.loadbalancer.server.port=5800"
+networks:
+  default:
+    external: true
+    name: traefik_services
