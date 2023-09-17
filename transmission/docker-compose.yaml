@@ -14,6 +14,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.transmission.rule=Host(`torrent.gandro.dev`)"
+      - "traefik.http.routers.transmission.entrypoints=websecure"
       - "traefik.http.routers.transmission.middlewares=auth@file"
       - "traefik.http.services.transmission.loadbalancer.server.port=9091"
 networks:

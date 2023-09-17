@@ -12,6 +12,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.miniflux.rule=Host(`rssreader.gandro.dev`)"
+      - "traefik.http.routers.miniflux.entrypoints=websecure"
       - "traefik.http.services.miniflux.loadbalancer.server.port=8080"
   db:
     image: postgres:15

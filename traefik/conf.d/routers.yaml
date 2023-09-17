@@ -2,6 +2,8 @@ http:
   routers:
     api:
       rule: Host(`traefik.gandro.dev`)
+      entrypoints:
+        - "websecure"
       service: api@internal
       middlewares:
         - auth

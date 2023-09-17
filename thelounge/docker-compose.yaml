@@ -11,6 +11,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.thelounge.rule=Host(`irc.gandro.dev`)"
+      - "traefik.http.routers.thelounge.entrypoints=websecure"
       - "traefik.http.services.thelounge.loadbalancer.server.port=9000"
 networks:
   default:

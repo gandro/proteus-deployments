@@ -23,6 +23,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.static.rule=Host(`gandro.dev`)"
+      - "traefik.http.routers.static.entrypoints=websecure"
     networks:
       - traefik_services
   dockerapi:

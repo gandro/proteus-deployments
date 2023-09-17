@@ -23,6 +23,7 @@ services:
       ## HTTP Router
       #### Host or Path where Jellyfin is accessible
       - "traefik.http.routers.jellyfin.rule=Host(`media.gandro.dev`)"
+      - "traefik.http.routers.jellyfin.entrypoints=websecure"
       #### Expose only HTTP port via Traefik
       - "traefik.http.services.jellyfin.loadbalancer.server.port=8096"
       ## Middleware
