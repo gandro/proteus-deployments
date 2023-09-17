@@ -21,6 +21,17 @@ schedule:
 
 template:
   - sensor:
+    - name: Vegetables
+      icon: mdi:food-apple
+      state: |
+        {% set today = now() %}
+        {% set days_to_saturday = (5 - today.weekday()) % 7 %}
+        {% set laundry = today + timedelta(days_to_saturday) %}
+        {% if laundry.isocalendar().week % 2 %}
+          {% set laundry = laundry + timedelta(7) %}
+        {% endif %}
+        {{ as_timestamp(laundry) | timestamp_custom("%Y-%m-%d") }}
+  - sensor:
     - name: Laundry
       icon: mdi:washing-machine
       state: |
